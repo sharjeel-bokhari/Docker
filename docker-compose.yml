@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  php-apache-environment:
+    container_name: php-apache
+    image: php:8.0-apache
+    build: 
+      context: ./
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+      - brands
+    volumes:
+      - ./:/var/www/html/
+    ports:
+      - 8000:80
+  db:
+    container_name: db
+    image: mysql
+    restart: always
+    environment:
+        MYSQL_ROOT_PASSWORD: MYSQL_ROOT_PASSWORD
+        MYSQL_DATABASE: MYSQL_DATABASE
+        MYSQL_USER: MYSQL_USER
+        MYSQL_PASSWORD: MYSQL_PASSWORD
+    ports:
+      - "9906:3306"
+  brands:
+    build: 
+      context: ./  # path is relative to docker-compose.yml location
+      dockerfile: Dockerfile-brands
+    volumes:
+      - ./:/usr/src/app # mount point
+    ports:
+      - 5001:5001  # host:container
